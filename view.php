@@ -27,6 +27,7 @@ $time = $row['date'];
 echo '<div class="container p-3 my-3 border">';
 
 echo "<center><h2>$title</h2></center>";
+echo "<style>.container img{width:100%;}</style>";
 echo '<div class="container p-10">';
 echo "$description<br><br>";
 echo '<div class="w3-text-grey">';

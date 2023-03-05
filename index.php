@@ -6,27 +6,27 @@ require_once 'header.php';
 // COUNT
 $sql = "SELECT COUNT(*) FROM posts";
 $result = mysqli_query($dbcon, $sql);
-$r = mysqli_fetch_row($result);
-$numrows = $r[0];
+// $r = mysqli_fetch_row($result);
+// $numrows = $r[0];
 
-$rowsperpage = PAGINATION;
-$totalpages = ceil($numrows / $rowsperpage);
+// $rowsperpage = PAGINATION;
+// $totalpages = ceil($numrows / $rowsperpage);
 
-$page = 1;
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = (int)$_GET['page'];
-}
+// $page = 1;
+// if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+//     $page = (int)$_GET['page'];
+// }
 
-if ($page > $totalpages) {
-    $page = $totalpages;
-}
+// if ($page > $totalpages) {
+//     $page = $totalpages;
+// }
 
-if ($page < 1) {
-    $page = 1;
-}
-$offset = ($page - 1) * $rowsperpage;
+// if ($page < 1) {
+//     $page = 1;
+// }
+// $offset = ($page - 1) * $rowsperpage;
 
-$sql = "SELECT * FROM posts ORDER BY id DESC LIMIT $offset, $rowsperpage";
+$sql = "SELECT * FROM posts ORDER BY id DESC";
 $result = mysqli_query($dbcon, $sql);
 
 if (mysqli_num_rows($result) < 1) {

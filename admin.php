@@ -90,14 +90,16 @@ if ($row_count == 1) {
                     <p><img style="width:140px" src="<?php echo $profile_pic; ?>" /></p>
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
                         <label for="fileToUpload">Select a file to change:</label>
-                        <input type="file" name="fileToUpload" id="fileToUpload"><br  />
+                        <input type="file" name="fileToUpload" id="fileToUpload"><br />
                         <br /><input type="submit" value="Change Pic" name="submit" class="btn btn-outline-success">
                     </form>
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title"><h3>Your Profile Detials</h3></h5><br/>
+                    <h5 class="card-title">
+                        <h3>Your Profile Detials</h3>
+                    </h5><br />
                     <div>
                         <?php
                         $sql = "SELECT * FROM admin WHERE username = '$username'";
@@ -142,9 +144,15 @@ if ($row_count == 1) {
                         }
                         ?>
                         <form action="" method="POST">
-                            <label><h5>Your Name: </h5></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="fname" value="<?php echo $fname; ?>" />
-                            <label><h5>Your Email: </h5></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="password" value="<?php echo $email; ?>" />
-                            <label><h5>Your Password: </h5></label>&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="email" value="<?php echo $password; ?>" /><br />
+                            <label>
+                                <h5>Your Name: </h5>
+                            </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="fname" value="<?php echo $fname; ?>" />
+                            <label>
+                                <h5>Your Email: </h5>
+                            </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="password" value="<?php echo $email; ?>" />
+                            <label>
+                                <h5>Your Password: </h5>
+                            </label>&nbsp;&nbsp;&nbsp;<input class="inp" type="text" name="email" value="<?php echo $password; ?>" /><br />
                             <br /><input type="submit" name="updpro" value="Update Details" class="btn btn-outline-success">
                         </form>
                     </div>
@@ -152,88 +160,72 @@ if ($row_count == 1) {
             </div>
         </div>
     </div>
-<!-- </div> --><br  /><br/>
-<h2 class="w3-center">All Blogs</h2>
-<?php
-$sql = "SELECT COUNT(*) FROM posts";
-$result = mysqli_query($dbcon, $sql);
-$r = mysqli_fetch_row($result);
+    <!-- </div> --><br /><br />
+    <h2 class="w3-center">All Blogs</h2>
+    <?php
+    $sql = "SELECT COUNT(*) FROM posts";
+    $result = mysqli_query($dbcon, $sql);
+    $r = mysqli_fetch_row($result);
 
-// $numrows = $r[0];
-// $rowsperpage = PAGINATION;
-// $totalpages = ceil($numrows / $rowsperpage);
-// $page = 1;
 
-// if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-//     $page = (int)$_GET['page'];
-// }
-// if ($page > $totalpages) {
-//     $page = $totalpages;
-// }
-// if ($page < 1) {
-//     $page = 1;
-// }
-// $offset = ($page - 1) * $rowsperpage;
+    $sql = "SELECT * FROM posts WHERE posted_by = '$username' ORDER BY id DESC";
+    $result = mysqli_query($dbcon, $sql);
 
-// $sql = "SELECT * FROM posts WHERE posted_by = '$username' ORDER BY id DESC LIMIT $offset, $rowsperpage";
-$sql = "SELECT * FROM posts WHERE posted_by = '$username' ORDER BY id DESC";
-$result = mysqli_query($dbcon, $sql);
+    if (mysqli_num_rows($result) < 1) {
+        echo "No post found";
+    }
+    echo '<table class="table table-striped" style="width:80%;"><thead><tr>';
+    echo '<th scope="col">Title</th>';
+    echo '<th scope="col">Date Created</th>';
+    echo '<th scope="col">Actions</th>';
+    echo '</tr></thead>';
+    echo '<tbody>';
 
-if (mysqli_num_rows($result) < 1) {
-    echo "No post found";
-}
-echo '<table class="table table-striped" style="width:80%;"><thead><tr>';
-echo '<th scope="col">Title</th>';
-echo '<th scope="col">Date Created</th>';
-echo '<th scope="col">Actions</th>';
-echo '</tr></thead>';
-echo '<tbody>';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $id = $row['id'];
+        $title = $row['title'];
+        $slug = $row['slug'];
+        $author = $row['posted_by'];
+        $time = $row['date'];
 
-while ($row = mysqli_fetch_assoc($result)) {
-    $id = $row['id'];
-    $title = $row['title'];
-    $slug = $row['slug'];
-    $author = $row['posted_by'];
-    $time = $row['date'];
+        $permalink = "p/" . $id . "/" . $slug;
+    ?>
 
-    $permalink = "p/" . $id . "/" . $slug;
-?>
+        <tr scope="row">
+            <!-- <td><?php echo $id; ?></td> -->
+            <td><a href="<?php echo $permalink; ?>"><?php echo substr($title, 0, 50); ?></a></td>
+            <td><?php echo $time; ?></td>
+            <td><a href="edit.php?id=<?php echo $id; ?>">Edit</a> | <a href="del.php?id=<?php echo $id; ?>" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+            </td>
+        </tr>
 
-    <tr scope="row">
-        <!-- <td><?php echo $id; ?></td> -->
-        <td><a href="<?php echo $permalink; ?>"><?php echo substr($title, 0, 50); ?></a></td>
-        <td><?php echo $time; ?></td>
-        <td><a href="edit.php?id=<?php echo $id; ?>">Edit</a> | <a href="del.php?id=<?php echo $id; ?>" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-        </td>
-    </tr>
-
-<?php
-}
-echo "</table>
+    <?php
+    }
+    echo "</table>
 </div>";
 
-// // pagination
-// echo "<p><div class='w3-bar w3-center'>";
-// if ($page > 1) {
-//     echo "<a href='?page=1' class='w3-btn'><<</a>";
-//     $prevpage = $page - 1;
-//     echo "<a href='?page=$prevpage' class='w3-btn'><</a>";
-// }
-// $range = 3;
-// for ($i = ($page - $range); $i < ($page + $range) + 1; $i++) {
-//     if (($i > 0) && ($i <= $totalpages)) {
-//         if ($i == $page) {
-//             echo "<div class='w3-btn w3-teal w3-hover-green'> $i</div>";
-//         } else {
-//             echo "<a href='?page=$i' class='w3-btn w3-border'>$i</a>";
-//         }
-//     }
-// }
-// if ($page != $totalpages) {
-//     $nextpage = $page + 1;
-//     echo "<a href='?page=$nextpage' class='w3-btn'>></a>";
-//     echo "<a href='?page=$totalpages' class='w3-btn'>>></a>";
-// }
-// echo "</div></p>";
+    // // pagination
+    // echo "<p><div class='w3-bar w3-center'>";
+    // if ($page > 1) {
+    //     echo "<a href='?page=1' class='w3-btn'><<</a>";
+    //     $prevpage = $page - 1;
+    //     echo "<a href='?page=$prevpage' class='w3-btn'><</a>";
+    // }
+    // $range = 3;
+    // for ($i = ($page - $range); $i < ($page + $range) + 1; $i++) {
+    //     if (($i > 0) && ($i <= $totalpages)) {
+    //         if ($i == $page) {
+    //             echo "<div class='w3-btn w3-teal w3-hover-green'> $i</div>";
+    //         } else {
+    //             echo "<a href='?page=$i' class='w3-btn w3-border'>$i</a>";
+    //         }
+    //     }
+    // }
+    // if ($page != $totalpages) {
+    //     $nextpage = $page + 1;
+    //     echo "<a href='?page=$nextpage' class='w3-btn'>></a>";
+    //     echo "<a href='?page=$totalpages' class='w3-btn'>>></a>";
+    // }
+    // echo "</div></p>";
 
-include("footer.php");
+    include("footer.php");
